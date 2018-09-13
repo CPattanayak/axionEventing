@@ -1,11 +1,15 @@
 package com.example.democomplaintstat;
 
 import com.axon.example.democomplaint.ComplaintFileEvent;
+import com.mongodb.MongoClient;
 import com.rabbitmq.client.Channel;
 import org.axonframework.amqp.eventhandling.DefaultAMQPMessageConverter;
 import org.axonframework.amqp.eventhandling.spring.SpringAMQPMessageSource;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
+import org.axonframework.mongo.DefaultMongoTemplate;
+import org.axonframework.mongo.eventsourcing.eventstore.MongoEventStorageEngine;
 import org.axonframework.serialization.Serializer;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -50,5 +54,9 @@ public class DemoComplaintStatApplication {
                 super.onMessage(message, channel);
             }
         };
+    }
+    @Bean
+    public EventStorageEngine eventStore(MongoClient client) {
+        return new MongoEventStorageEngine (new DefaultMongoTemplate (client));
     }
 }

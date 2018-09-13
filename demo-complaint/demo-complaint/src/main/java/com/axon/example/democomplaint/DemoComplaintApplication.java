@@ -1,5 +1,6 @@
 package com.axon.example.democomplaint;
 
+import com.mongodb.MongoClient;
 import org.axonframework.commandhandling.CommandCallback;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.CommandMessage;
@@ -7,6 +8,9 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
+import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
+import org.axonframework.mongo.DefaultMongoTemplate;
+import org.axonframework.mongo.eventsourcing.eventstore.MongoEventStorageEngine;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.springframework.amqp.core.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,11 @@ import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
 
 @SpringBootApplication
 public class DemoComplaintApplication {
+    @Bean
+    public EventStorageEngine eventStore(MongoClient client) {
+        return new MongoEventStorageEngine (new DefaultMongoTemplate (client));
+    }
+
 
     @Bean
     public Exchange exchange()
